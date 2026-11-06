@@ -1360,6 +1360,23 @@ int plat_clipboard_set(const char *utf8) {
     return ok;
 }
 
+static DWORD WINAPI open_url_main(void *arg) {
+    ShellExecuteW(NULL, L"open", arg, NULL, NULL, SW_SHOWNORMAL);
+    free(arg);
+    return 0;
+}
+
+// Only https addresses (the menu's credits link); the shell can be slow, so a thread opens it.
+int plat_open_url(const char *url) {
+    if (strncmp(url, "https://", 8)) return 0;
+    wchar_t *w = malloc(WPATH * sizeof *w);
+    if (!w || !widen(url, w, WPATH)) return free(w), 0;
+    HANDLE t = CreateThread(NULL, 0, open_url_main, w, 0, NULL);
+    if (!t) return free(w), 0;
+    CloseHandle(t);
+    return 1;
+}
+
 static DWORD WINAPI open_folder_main(void *arg) {
     ShellExecuteW(NULL, L"open", arg, NULL, NULL, SW_SHOWNORMAL);
     free(arg);

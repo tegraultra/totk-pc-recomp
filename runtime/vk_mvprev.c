@@ -186,7 +186,7 @@ void vk_mvprev_frame(void) {
             P.timed = rt_knob("MVOBJ_TIMES", "0");
         }
     }
-    int on = P.knob && cfg_bool("TOTK_DLAA");
+    int on = P.knob && (cfg_bool("TOTK_DLAA") || cfg_bool("TOTK_FSR4"));
     if (on != (P.on > 0)) {
         P.on = on ? 1 : -1;
         if (P.t[0]) memset(P.t[0], 0, TABLE * sizeof(Seen)), memset(P.t[1], 0, TABLE * sizeof(Seen));

@@ -22,6 +22,8 @@ Report problems as issues, following [CONTRIBUTING.md](CONTRIBUTING.md).
 - Custom resolutions (1080p, 2k...), supersampling and AMD FSR 1 upscaling
 - NVIDIA DLSS / DLAA on RTX GPUs: the setup downloads `nvngx_dlss.dll` from NVIDIA's DLSS SDK repository
   (github.com/NVIDIA/DLSS, NVIDIA RTX SDK license) when it finds an RTX GPU; untick it in the setup to skip it
+- AMD FSR 4 on Radeon RX 6000 and newer (Windows): AMD's two DLLs go next to `totk.exe`, `fsr4 = 1` in `totk.ini` or
+  the in-game menu (F1); see [docs/fsr4.md](docs/fsr4.md). FSR 4 support by MK-JH, Telegram: https://t.me/MKJH_APPS
 - HDR10 output with peak, game and HUD brightness settings
 - 16:10 (Steam Deck, handhelds), 3:2 (Surface, Framework), 21:9 and 32:9 (ultrawide) game resolutions, with the camera and the interface in that shape
 - Anisotropic texture filtering up to 16x, for sharp ground into the distance

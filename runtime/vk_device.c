@@ -11,6 +11,7 @@
 #include "vk.h"
 #include "platform/platform.h"
 #include "vk_dlaa.h"
+#include "vk_fsr4.h"
 
 static VkCtx g_vk;
 static int g_ready;
@@ -217,6 +218,10 @@ typedef struct {
     VkPhysicalDeviceGraphicsPipelineLibraryFeaturesEXT gpl;
     VkPhysicalDeviceAttachmentFeedbackLoopLayoutFeaturesEXT fbl;
     VkPhysicalDeviceDynamicRenderingLocalReadFeaturesKHR lr;
+    VkPhysicalDeviceCooperativeMatrixFeaturesKHR coop;   // AMD FSR 4's model (vk_fsr4.cpp), only with TOTK_FSR4 on
+#ifdef VK_EXT_shader_float8
+    VkPhysicalDeviceShaderFloat8FeaturesEXT f8;
+#endif
 } FeatureChain;
 
 static int create_device(void) {
@@ -224,7 +229,7 @@ static int create_device(void) {
     vkEnumerateDeviceExtensionProperties(g_vk.phys, NULL, &ne, NULL);
     VkExtensionProperties *ep = calloc(ne ? ne : 1, sizeof *ep);
     vkEnumerateDeviceExtensionProperties(g_vk.phys, NULL, &ne, ep);
-    const char *ext[48];
+    const char *ext[56];
     uint32_t n_ext = 0;
     for (size_t i = 0; i < sizeof k_required_ext / sizeof *k_required_ext; i++) ext[n_ext++] = k_required_ext[i];
 
@@ -261,6 +266,33 @@ static int create_device(void) {
         CHAIN(fbl, VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_ATTACHMENT_FEEDBACK_LOOP_LAYOUT_FEATURES_EXT);
         CHAIN(lr, VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DYNAMIC_RENDERING_LOCAL_READ_FEATURES_KHR);
     }
+    // AMD FSR 4 (fsr4 = 1, Windows, AMD's DLLs next to totk.exe): its machine-learning upscaler wants cooperative
+    // matrices, FP8 where the GPU has it, and integer dot products (core in 1.3, enabled with the 1.3 features above).
+    // Each only where the GPU has it; a GPU without them gets no FSR 4 provider and the game runs as without it.
+#ifdef _WIN32
+    if (cfg_bool("TOTK_FSR4") && vk_fsr4_dlls_present()) {
+        if (has_ext(ep, ne, VK_KHR_COOPERATIVE_MATRIX_EXTENSION_NAME)) {
+            ext[n_ext++] = VK_KHR_COOPERATIVE_MATRIX_EXTENSION_NAME;
+            CHAIN(coop, VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_COOPERATIVE_MATRIX_FEATURES_KHR);
+        }
+#ifdef VK_EXT_shader_float8
+        if (has_ext(ep, ne, VK_EXT_SHADER_FLOAT8_EXTENSION_NAME)) {
+            ext[n_ext++] = VK_EXT_SHADER_FLOAT8_EXTENSION_NAME;
+            CHAIN(f8, VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_FLOAT8_FEATURES_EXT);
+        }
+#endif
+        if (has_ext(ep, ne, VK_KHR_SHADER_INTEGER_DOT_PRODUCT_EXTENSION_NAME))
+            ext[n_ext++] = VK_KHR_SHADER_INTEGER_DOT_PRODUCT_EXTENSION_NAME;
+        rt_log("fsr4: device: cooperative matrix %s, FP8 %s, integer dot product %s",
+               c->coop.sType ? "asked for" : "not offered",
+#ifdef VK_EXT_shader_float8
+               c->f8.sType ? "asked for" : "not offered",
+#else
+               "not offered",
+#endif
+               "on with 1.3");
+    }
+#endif
     vk_dlaa_device_exts(ep, ne, ext, &n_ext, 40);   // NGX's; the eight slots after it stay for the seven below
     if (has_ext(ep, ne, VK_EXT_MEMORY_BUDGET_EXTENSION_NAME)) { g_vk.has_memory_budget = 1; ext[n_ext++] = VK_EXT_MEMORY_BUDGET_EXTENSION_NAME; }
     // GPU timestamps on the CPU clock (vk_sync.c): the perf line splits GPU idle time into waiting for a submission or not.

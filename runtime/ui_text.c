@@ -139,6 +139,15 @@ static const char *const text_en[UI_TEXT_COUNT] = {
     [UI_MENU_SHADOW_RANGE_DESC] = "Moves the steps where shadows turn softer (the game's 20, 40, 80 and 160 m) further "
                                   "away. Spreads the shadow map over more ground: raise Shadow resolution with it. "
                                   "Takes effect at the next start.",
+    [UI_MENU_FSR4] = "AMD FSR 4",
+    [UI_MENU_FSR4_DESC] = "AMD FSR 4 for the 3D scene, in place of NVIDIA DLSS (Radeon RX 6000 and newer; AMD's "
+                          "amd_fidelityfx_loader_vk.dll and amd_fidelityfx_upscaler_vk.dll next to " EXE_FILE "): smoother "
+                          "edges and less shimmer. The HUD is not touched. The DLSS mode below sets the resolution it "
+                          "works from (DLAA = native). Takes effect after a restart. FSR 4 support by MK-JH.",
+    [UI_MENU_CREDITS] = "Credits",
+    [UI_MENU_CREDIT_FSR4] = "FSR 4 support by MK-JH",
+    [UI_MENU_CREDIT_FSR4_DESC] = "AMD FSR 4 in this build was added by MK-JH. Press to open his Telegram channel "
+                                 "(t.me/MKJH_APPS) in your browser.",
     [UI_MENU_DLAA] = "NVIDIA DLSS / DLAA",
     [UI_MENU_DLAA_DESC] = "NVIDIA DLSS for the 3D scene (NVIDIA RTX GPUs; " DLSS_FILE " next to " EXE_FILE "): smoother "
                           "edges and less shimmer. The HUD is not touched. The mode below sets the resolution it works "

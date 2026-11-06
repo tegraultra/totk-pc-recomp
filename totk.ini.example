@@ -211,9 +211,14 @@
 # NVIDIA driver's libnvidia-ngx.so.1 installed); elsewhere the setting does nothing. The HUD is drawn after it and is not touched.
 # Read at start.
 # dlaa = 0
+# AMD FSR 4 for the 3D scene, in place of DLSS (Windows only; Radeon RX 6000 and newer). Needs AMD's two signed DLLs,
+# amd_fidelityfx_loader_vk.dll and amd_fidelityfx_upscaler_vk.dll, next to totk.exe (docs/fsr4.md); without them, or on
+# a GPU with no FSR 4 provider, the setting does nothing. It runs where DLSS runs, so dlss below sets its mode too. With
+# both fsr4 and dlaa on, FSR 4 is used. FSR 4 support by MK-JH (https://t.me/MKJH_APPS). Read at start.
+# fsr4 = 0
 # What DLSS works from: dlaa (the 3D scene at full size), quality, balanced, performance or ultra_performance (the
 # scene at 67, 58, 50 or 33 % of the output, scaled up by DLSS; these replace render_scale and sharpen texture filtering
-# to match). They apply only with dlaa = 1 and the DLSS model next to the executable; otherwise the scene follows
+# to match). They apply only with dlaa = 1 (or fsr4 = 1) and the DLSS model (or AMD's DLLs) next to the executable; otherwise the scene follows
 # render_scale. Changes while the game runs take effect at once (1.4.3; 1.2.1 at the next start).
 # dlss = dlaa
 # The DLSS model: default (NVIDIA's advice per mode: K for dlaa, quality and balanced, M for performance, L for

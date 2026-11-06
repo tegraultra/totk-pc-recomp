@@ -679,6 +679,7 @@ static void tab_screen(float scale) {
     opt_slider("TOTK_PCSS", UI_MENU_PCSS, 0, 200, UI_MENU_PCSS_DESC, 10, "%.0f %%");
     opt_slider("TOTK_CONTACT_SHADOWS", UI_MENU_CONTACT_SHADOWS, 0, 100, UI_MENU_CONTACT_SHADOWS_DESC, 10, "%.0f %%");
     opt_toggle("TOTK_DLAA", UI_MENU_DLAA, UI_MENU_DLAA_DESC);
+    opt_toggle("TOTK_FSR4", UI_MENU_FSR4, UI_MENU_FSR4_DESC);   // AMD FSR 4 by MK-JH (vk_fsr4.cpp)
     static const UiTextId dlss[] = {UI_MENU_DLSS_DLAA, UI_MENU_DLSS_QUALITY, UI_MENU_DLSS_BALANCED,
                                     UI_MENU_DLSS_PERFORMANCE, UI_MENU_DLSS_ULTRA};
     opt_choice("TOTK_DLSS", UI_MENU_DLSS, dlss, 5, UI_MENU_DLSS_DESC);
@@ -695,6 +696,9 @@ static void tab_screen(float scale) {
     opt_slider("TOTK_HDR_GAME_NITS", UI_MENU_HDR_GAME, 80, 500, UI_MENU_HDR_GAME_DESC, 5, "%.0f");
     opt_slider("TOTK_HDR_UI_NITS", UI_MENU_HDR_UI, 80, 500, UI_MENU_HDR_UI_DESC, 5, "%.0f");
     opt_slider("TOTK_HDR_HUE", UI_MENU_HDR_HUE, 0, 100, UI_MENU_HDR_HUE_DESC, 5, "%.0f %%");
+    opt_group(UI_MENU_CREDITS);
+    if (opt_button("##credit_fsr4", UI_MENU_CREDIT_FSR4, UI_MENU_CREDIT_FSR4_DESC, "t.me/MKJH_APPS"))
+        plat_open_url("https://t.me/MKJH_APPS");
     opt_end();
 }
 

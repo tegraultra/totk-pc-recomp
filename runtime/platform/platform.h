@@ -382,6 +382,7 @@ int plat_stderr_path(char *out, size_t cap);
 // ---- desktop: the in-game menu's "Copy system info" and "Open log folder"
 int plat_clipboard_set(const char *utf8);                 // replaces the clipboard's text; 1 on success
 int plat_open_folder(const char *path);                   // shows the folder in the file manager; 1 on success
+int plat_open_url(const char *https_url);                 // opens an https:// address in the default browser; 1 on success
 
 // ---- dynamic libraries: a library some machines lack (a GPU vendor's), loaded at run time. A bare name is searched
 // in the system directories only. NULL when missing.

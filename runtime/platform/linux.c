@@ -1451,6 +1451,20 @@ int plat_open_folder(const char *path) {
     return 1;
 }
 
+int plat_open_url(const char *url) {
+    if (strncmp(url, "https://", 8)) return 0;
+    posix_spawnattr_t a;
+    posix_spawnattr_init(&a);
+    posix_spawnattr_setflags(&a, POSIX_SPAWN_SETSID);
+    char *argv[] = {"xdg-open", (char *)url, NULL};
+    pid_t pid;
+    int e = posix_spawnp(&pid, "xdg-open", NULL, &a, argv, environ);
+    posix_spawnattr_destroy(&a);
+    if (e) return 0;
+    plat_thread_spawn(reap_main, (void *)(intptr_t)pid, "reap", 64 << 10);
+    return 1;
+}
+
 // ---- dynamic libraries
 
 void *plat_lib_open(const char *name) { return dlopen(name, RTLD_NOW | RTLD_LOCAL); }

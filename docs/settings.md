@@ -147,6 +147,8 @@ Many rows below are developer tools that only act together with another setting 
 
 | Setting | What it does | Effect of changing it | Safety |
 | --- | --- | --- | --- |
+| `fsr4_debug` (environment variable `TOTK_FSR4_DEBUG`) | `1` turns on AMD's checks of FSR 4's inputs. | Reports in the log; a little extra work. | Caution |
+| `fsr4_view` (environment variable `TOTK_FSR4_VIEW`) | `1` shows FSR 4's own debug view in place of the picture. | The frame shows a debug image while it is set. | Caution |
 | `dlaa_jitter` (default `1`) | `0` turns off the camera jitter fed to DLSS. | DLSS gets no jitter between frames; a test setting. | Caution |
 | `dlaa_maskdebug` (default `0`) | `1` shows the reactive mask in place of the picture. | The frame shows a debug image while it is set. | Caution |
 | `dlaa_mv` (default `1`) | `0` sends zero motion vectors to DLSS. | DLSS sees no motion, so moving content can smear; a test setting. | Caution |

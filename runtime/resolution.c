@@ -71,6 +71,12 @@ static int dlss_dll(void) {
     if (!plat_exe_path(exe, sizeof exe)) return 1;
     char *last = plat_last_sep(exe);
     if (!last) return 1;
+    if (cfg_bool("TOTK_FSR4")) {   // FSR 4 (vk_fsr4.cpp) runs in place of DLSS: AMD's two DLLs are what it needs
+        snprintf(path, sizeof path, "%.*s/amd_fidelityfx_loader_vk.dll", (int)(last - exe), exe);
+        if (!plat_file_exists(path)) return 0;
+        snprintf(path, sizeof path, "%.*s/amd_fidelityfx_upscaler_vk.dll", (int)(last - exe), exe);
+        return plat_file_exists(path);
+    }
     snprintf(path, sizeof path, "%.*s/nvngx_dlss.dll", (int)(last - exe), exe);
     return plat_file_exists(path);
 #else
@@ -103,13 +109,15 @@ static double dlss_share(const char *m) {
     static const struct { const char *name; double k; } dlss[] = {
         {"quality", 2.0 / 3.0}, {"balanced", 0.58}, {"performance", 0.5}, {"ultra_performance", 1.0 / 3.0}};
     static int dll = -1;
-    if (!cfg_bool("TOTK_DLAA")) return 0;
+    if (!cfg_bool("TOTK_DLAA") && !cfg_bool("TOTK_FSR4")) return 0;
     for (int i = 0; i < (int)(sizeof dlss / sizeof dlss[0]); i++)
         if (!strcmp(m, dlss[i].name)) {
             if (dll < 0 && !(dll = dlss_dll())) {
 #ifdef _WIN32
-                rt_log("resolution: DLSS %s needs nvngx_dlss.dll next to totk.exe, which is missing: the scene follows "
-                       "render_scale", m);
+                rt_log("resolution: %s %s needs %s next to totk.exe, which is missing: the scene follows "
+                       "render_scale", cfg_bool("TOTK_FSR4") ? "FSR 4" : "DLSS", m,
+                       cfg_bool("TOTK_FSR4") ? "amd_fidelityfx_loader_vk.dll and amd_fidelityfx_upscaler_vk.dll"
+                                             : "nvngx_dlss.dll");
 #else
                 rt_log("resolution: DLSS %s needs libnvidia-ngx-dlss.so.<version> next to totk, which is missing: the "
                        "scene follows render_scale", m);
@@ -151,7 +159,7 @@ static void decide(void) {
     // for the largest scene the modes ask for. Everyone else keeps the game's own scene size and its dynamic resolution
     // unless render_scale or a DLSS mode asks for another, and a heap sized for that scene alone.
     R.base_k = k;
-    R.live = RT_V143 && cfg_bool("TOTK_DLAA") && dlss_dll();
+    R.live = RT_V143 && (cfg_bool("TOTK_DLAA") || cfg_bool("TOTK_FSR4")) && dlss_dll();
     const char *m = cfg_value("TOTK_DLSS");
     R.dlss_k = dlss_share(m);
     if (R.dlss_k) rt_log("resolution: DLSS %s: the scene at %.0f %% of the output (render_scale ignored)", m, R.dlss_k * 100);
