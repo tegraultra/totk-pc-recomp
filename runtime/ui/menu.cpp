@@ -682,12 +682,16 @@ static void tab_screen(float scale) {
     opt_toggle("TOTK_FSR4", UI_MENU_FSR4, UI_MENU_FSR4_DESC);   // AMD FSR 4 by MK-JH (vk_fsr4.cpp)
     static const UiTextId dlss[] = {UI_MENU_DLSS_DLAA, UI_MENU_DLSS_QUALITY, UI_MENU_DLSS_BALANCED,
                                     UI_MENU_DLSS_PERFORMANCE, UI_MENU_DLSS_ULTRA};
-    opt_choice("TOTK_DLSS", UI_MENU_DLSS, dlss, 5, UI_MENU_DLSS_DESC);
+    // With FSR 4 on, the same rows are named for it; the DLSS model row is NVIDIA-only and left out.
+    const bool fsr4 = cfg_bool("TOTK_FSR4");
+    opt_choice("TOTK_DLSS", fsr4 ? UI_MENU_FSR4_MODE : UI_MENU_DLSS, dlss, 5,
+               fsr4 ? UI_MENU_FSR4_MODE_DESC : UI_MENU_DLSS_DESC);
     static const UiTextId preset[] = {UI_MENU_DLSS_PRESET_DEFAULT, UI_MENU_DLSS_PRESET_K, UI_MENU_DLSS_PRESET_J};
-    opt_choice("TOTK_DLSS_PRESET", UI_MENU_DLSS_PRESET, preset, 3, UI_MENU_DLSS_PRESET_DESC);
+    if (!fsr4) opt_choice("TOTK_DLSS_PRESET", UI_MENU_DLSS_PRESET, preset, 3, UI_MENU_DLSS_PRESET_DESC);
     static const UiTextId chars[] = {UI_MENU_DLSS_CHARS_OFF, UI_MENU_DLSS_CHARS_LIGHT, UI_MENU_DLSS_CHARS_MEDIUM,
                                      UI_MENU_DLSS_CHARS_FULL};
-    opt_choice("TOTK_DLSS_CHAR_MASK", UI_MENU_DLSS_CHARS, chars, 4, UI_MENU_DLSS_CHARS_DESC);
+    opt_choice("TOTK_DLSS_CHAR_MASK", fsr4 ? UI_MENU_FSR4_CHARS : UI_MENU_DLSS_CHARS, chars, 4,
+               fsr4 ? UI_MENU_FSR4_CHARS_DESC : UI_MENU_DLSS_CHARS_DESC);
     opt_toggle("TOTK_FXAA", UI_MENU_FXAA, UI_MENU_FXAA_DESC);
     rows_color();
     opt_group(UI_MENU_HDR_GROUP);

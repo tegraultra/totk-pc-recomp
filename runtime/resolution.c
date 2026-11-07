@@ -162,7 +162,7 @@ static void decide(void) {
     R.live = RT_V143 && (cfg_bool("TOTK_DLAA") || cfg_bool("TOTK_FSR4")) && dlss_dll();
     const char *m = cfg_value("TOTK_DLSS");
     R.dlss_k = dlss_share(m);
-    if (R.dlss_k) rt_log("resolution: DLSS %s: the scene at %.0f %% of the output (render_scale ignored)", m, R.dlss_k * 100);
+    if (R.dlss_k) rt_log("resolution: %s %s: the scene at %.0f %% of the output (render_scale ignored)", cfg_bool("TOTK_FSR4") ? "FSR 4" : "DLSS", m, R.dlss_k * 100);
     double sk = R.dlss_k ? R.dlss_k : k;
     if (R.live || R.dlss_k || R.ow * sk > SCENE_MAX || R.oh * sk > SCENE_MAX) R.scene_set = 1;
     scene_for(sk, &R.sw, &R.sh);
@@ -466,7 +466,7 @@ int res_dlss_mode(const char *m) {
     double k = dlss_share(m);
     if (k == R.dlss_k || !R.on) return 0;
     if (!RT_V143 || !renderer) {
-        rt_log("resolution: DLSS %s takes effect at the next start (the game set its render size already)", m);
+        rt_log("resolution: %s %s takes effect at the next start (the game set its render size already)", cfg_bool("TOTK_FSR4") ? "FSR 4" : "DLSS", m);
         return 0;
     }
     R.dlss_k = k;
@@ -478,7 +478,7 @@ int res_dlss_mode(const char *m) {
     memcpy((uint8_t *)rt_patch_page() + 16, sc, sizeof sc);
     R.sw = w, R.sh = h;
     size_pending = 1;
-    rt_log("resolution: DLSS %s: scene %ux%u", m, w, h);
+    rt_log("resolution: %s %s: scene %ux%u", cfg_bool("TOTK_FSR4") ? "FSR 4" : "DLSS", m, w, h);
     return 1;
 }
 

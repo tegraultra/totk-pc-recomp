@@ -144,6 +144,14 @@ static const char *const text_en[UI_TEXT_COUNT] = {
                           "amd_fidelityfx_loader_vk.dll and amd_fidelityfx_upscaler_vk.dll next to " EXE_FILE "): smoother "
                           "edges and less shimmer. The HUD is not touched. The DLSS mode below sets the resolution it "
                           "works from (DLAA = native). Takes effect after a restart. FSR 4 support by MK-JH.",
+    [UI_MENU_FSR4_MODE] = "FSR 4 mode",
+    [UI_MENU_FSR4_MODE_DESC] = "Native draws the 3D scene at full resolution and uses FSR 4 as anti-aliasing. Quality, "
+                               "Balanced, Performance and Ultra Performance draw it at 67, 58, 50 and 33 % and let FSR 4 "
+                               "scale it up, which saves GPU time; they replace the 3D render scale. Takes effect at once.",
+    [UI_MENU_FSR4_CHARS] = "FSR 4 character trails",
+    [UI_MENU_FSR4_CHARS_DESC] = "Reduces the faint trails behind moving characters, animals and what they hold: FSR 4 "
+                                "takes less of the previous frames there. Stronger removes more of the trails and leaves "
+                                "those edges a little less smooth. Applies at once.",
     [UI_MENU_CREDITS] = "Credits",
     [UI_MENU_CREDIT_FSR4] = "FSR 4 support by MK-JH",
     [UI_MENU_CREDIT_FSR4_DESC] = "AMD FSR 4 in this build was added by MK-JH. Press to open his Telegram channel "
