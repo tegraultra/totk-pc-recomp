@@ -707,6 +707,14 @@ class Extract(Step):
         # The output is whatever matches the expected hashes, whichever files and tools produced it.
         return fingerprint('extract-1', ctx.layout.expected(game_version(ctx)))
 
+    def compatible(self, ctx, record):
+        # The key is a hash of the expected-hash file, whose bytes depend on the line endings of the checkout the
+        # release was made from, and a newer release may list other hashes. The extraction does not depend on the file
+        # itself: current() checks the exefs and the RomFS against this release's hashes, and the full RomFS hash is
+        # checked before another release's output is kept (verify). So an install made by any release is kept when it
+        # matches, whatever key it recorded.
+        return True
+
     def current(self, ctx, record):
         # Another update file than the recorded one (1.2.1 -> 1.4.3) extracts again; the check then identifies it.
         update, known = getattr(ctx.options, 'update', None), ctx.state['inputs'].get('update')

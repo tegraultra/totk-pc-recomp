@@ -40,6 +40,11 @@ class Step:
         """True when the recorded output is still in place (cheap checks only)."""
         return True
 
+    def compatible(self, ctx, record):
+        """True when a record with another key may still stand, current() deciding: for a step whose key only
+        fingerprints inputs that its output is checked against anyway."""
+        return False
+
     def verify(self, ctx, record):
         """True when the recorded output passes the full check (hashes); called before keeping another release's
         output."""
@@ -78,7 +83,8 @@ class Context:
             if s.always or s.id in forced:
                 self.runs[s.id] = True
             else:
-                self.runs[s.id] = not (rec and rec.get('key') == self.keys[s.id] and s.current(self, rec))
+                self.runs[s.id] = not (rec and (rec.get('key') == self.keys[s.id] or s.compatible(self, rec))
+                                   and s.current(self, rec))
             self.reasons[s.id] = '' if self.runs[s.id] else 'current'
         for i in range(len(self.steps) - 2, -1, -1):
             s, after = self.steps[i], self.steps[i + 1]
