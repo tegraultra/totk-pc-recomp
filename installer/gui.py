@@ -18,6 +18,7 @@ import subprocess
 import sys
 import tempfile
 import threading
+import webbrowser
 from pathlib import Path
 
 from . import dpi
@@ -107,6 +108,7 @@ class App:
         style.configure('Notice.TLabel', background='#fff3cd', foreground='#664d03', padding=dpi.px(8))
         style.configure('Err.TLabel', foreground='#c01c28')
         style.configure('Version.TLabel', foreground='#808080')
+        style.configure('Link.TLabel', foreground='#0b57d0', font=(self.ui_font, 9, 'underline'))
 
         top = ttk.Frame(root, padding=(PAD, PAD, PAD, 0))
         top.pack(fill='x')
@@ -123,6 +125,13 @@ class App:
         self.ui_box.set(UI_LANGUAGE_LABELS[self.cat.lang])
         self.ui_box.bind('<<ComboboxSelected>>', self.pick_language)
         self.ui_box.pack(side='left')
+        # Credit line of the FSR 4 support (runtime/vk_fsr4.cpp): a name and an address, so the same in every language.
+        foot = ttk.Frame(root, padding=(PAD, 0, PAD, PAD))
+        foot.pack(side='bottom', fill='x')
+        ttk.Label(foot, text='FSR 4 support by MK-JH', style='Version.TLabel').pack(side='left')
+        link = ttk.Label(foot, text='t.me/MKJH_APPS', style='Link.TLabel', cursor='hand2')
+        link.pack(side='left', padx=(dpi.px(8), 0))
+        link.bind('<Button-1>', lambda _e: webbrowser.open('https://t.me/MKJH_APPS'))
         self.body = ttk.Frame(root, padding=PAD)
         self.body.pack(fill='both', expand=True)
         self.frames = {'form': self.build_form(), 'run': self.build_run(), 'finish': self.build_finish()}
