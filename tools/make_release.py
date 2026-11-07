@@ -434,6 +434,11 @@ def build_sources(out, pgo):
         shutil.copy2(ROOT / 'tools' / f, out / 'tools' / f)
     for d in TOOLS_DIRS:
         copy_tree(ROOT / 'tools' / d, out / 'tools' / d, lambda r: '__pycache__' in r or r.endswith('.md'))
+    # The installer's extract step is keyed by the bytes of these files, and the releases already installed were made
+    # with CRLF line endings (a Windows checkout). Whatever the checkout's line endings, write CRLF, or an install made
+    # by an earlier release is asked for its game files again.
+    for f in sorted((out / 'tools' / 'data').glob('expected-v*.json')):
+        f.write_bytes(f.read_bytes().replace(b'\r\n', b'\n').replace(b'\n', b'\r\n'))
     (out / 'data').mkdir(exist_ok=True)
     text = shader_list.history(MAIN_ROOT / 'refs' / 'MacNativeGames', MNG_COMMIT)
     (out / 'data' / 'shader_list.tsv').write_text(text, encoding='utf-8', newline='\n')
